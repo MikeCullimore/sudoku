@@ -2,6 +2,7 @@
 sudoku.py
 
 todo:
+Logging (to conveniently show/hide debug info.)
 How to implement rules?
 Web visualisation (React? Elm? Vanilla JS?).
 """
@@ -22,7 +23,7 @@ example = """
 1-----98-
 """
 
-# Example puzzle used by Dad.
+# Example from Dad.
 example2 = """
 --7------
 --9----54
@@ -38,17 +39,35 @@ example2 = """
 
 class Cell:
     def __init__(self, value=None):
-        if value is not None:
-            self._value = value
-            self._options = [value]
+        self._value = value
+        if value is None:    
+            self._options = digits.copy()  # Deep copy (else we'd be mutating digits).
         else:
-            self._value = value
-            self._options = digits
+            self._options = [value]
     
     def __str__(self):
-        if self._value is None:
-            return ' '
-        return str(self._value)
+        if self.known():
+            return str(self._value)
+        return ' '
+        
+    
+    def eliminate(self, option):
+        # If cell known already, return.
+        if self.known():
+            return
+        
+        try:
+            self._options.remove(option)
+        except ValueError:
+            # print(f'(Option {option} has been removed already).')
+            return
+        
+        if len(self._options) == 1:
+            self._value = self._options[0]
+            print(f'Solved cell: value = {self._value}')  # debugging
+
+    def known(self):
+        return self._value is not None
 
 
 class Sudoku:
@@ -58,6 +77,9 @@ class Sudoku:
     Convention: row 1 is the top, column 1 is the left.
 
     todo:
+    Getters for non-empty cells in given group?
+    Function to convert cell index to col and row? (Inverse of what we have.)
+    Iterators for rows, columns, boxes?
     Getter for a given number? ("Where are all the 1s?")
     Class for CellGroup, view into list of cells, with row, column and box as examples? Also cells in full puzzle?
         Print method.
@@ -86,8 +108,7 @@ class Sudoku:
     def print(self):
         for row in digits:
             for col in digits:
-                cell = self.cell(col, row)
-                print(cell, end=' ')
+                print(self.cell(col, row), end=' ')
             print()
     
     def cell(self, col, row):
@@ -112,6 +133,9 @@ class Sudoku:
         return [self.cell(col, i) for col in digits]
     
     def box(self, i):
+        """
+        todo: change index to c, r i.e. get cells in same box as the following cell?
+        """
         if i not in digits:
             raise ValueError(f'Invalid box index: {i}. Must be in 1-9.')
         
@@ -144,11 +168,49 @@ def main():
     # s = Sudoku(example2)
     s.print()
     # print(len(s._cells))
-    print(s._cells[1]._value)
-    print(s.cell(2, 1)._value)
+    # print(s._cells[1]._value)
+    # print(s.cell(2, 1)._value)
     # print(s.col(1))
     # print(s.row(1))
-    print(s.box(1))
+    # print(s.box(1))
+
+    # Solve: work in progress!
+    # todo: apply col, row and box rules at each cell.
+    # todo: keep iterating until no further changes.
+    # todo: Don't Repeat Yourself: one neighbour comparison for all rules.
+    for r in digits:
+        for c in digits:
+            # print(f'At ({c}, {r})')
+            
+            # Column rule.
+            for neighbour in s.col(c):
+                # Do not compare cell with itself.
+                if neighbour is s.cell(c, r):
+                    continue
+                
+                # If neighbour is known, eliminate option for this cell.
+                # todo: check here that it has not been eliminated already? Can then track changes.
+                if neighbour._value is not None:
+                    # print(f'Cell ({c}, {r}) can\'t be {neighbour._value} (column rule).')
+                    s.cell(c, r).eliminate(neighbour._value)
+            
+            # Row rule.
+            for neighbour in s.row(c):
+                # Do not compare cell with itself.
+                if neighbour is s.cell(c, r):
+                    continue
+                
+                # If neighbour is known, eliminate option for this cell.
+                # todo: check here that it has not been eliminated already? Can then track changes.
+                if neighbour._value is not None:
+                    # print(f'Cell ({c}, {r}) can\'t be {neighbour._value} (row rule).')
+                    s.cell(c, r).eliminate(neighbour._value)
+            
+            # todo: box rule (modify getter?).
+    
+    # Print status after rules applied.
+    print()
+    s.print()
 
 
 if __name__ == '__main__':
