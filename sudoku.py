@@ -4,16 +4,6 @@ sudoku.py
 Sudoku solver based on Computerphile YouTube video.
 
 https://www.youtube.com/watch?v=G_UYXzGuqvM
-
-todo:
-Refactor as OO: sudoku_oo.py.
-Logging (to conveniently show/hide debug info.)
-Visualisation: web? (React? Elm? Vanilla JS?)
-Profile.
-Optimise.
-    Flat array not list of lists.
-    Avoid nested for loops.
-    Store range(9).
 """
 
 

@@ -1,14 +1,9 @@
 """
 sudoku.py
 
-Sudoku solver based on Computerphile YouTube video.
+Sudoku solver based on Computerphile YouTube video. (Object-oriented version.)
 
 https://www.youtube.com/watch?v=G_UYXzGuqvM
-
-todo:
-Apply changes from sudoku.py (return condition is wrong in solve).
-Logging (to conveniently show/hide debug info.)
-Visualisation: web? (React? Elm? Vanilla JS?)
 """
 
 
@@ -67,26 +62,28 @@ class Sudoku:
                         if self.possible(c, r, n):
                             self._cells[r][c] = n
                             
-                            # debugging
-                            self.print()
-                            print()
+                            # # debugging
+                            # self.print()
+                            # print()
                             
                             self.solve()
 
                             # Backtracking: this possibility didn't work out, so undo it.
                             self._cells[r][c] = 0
                     return
+        self.print()
+        return
     
     def possible(self, c, r, n):
         """Is the number n possible at column c, row r?"""
-        # Column rule.
-        for i in range(9):
-            if self._cells[i][c] == n:
-                return False
-        
         # Row rule.
         for i in range(9):
             if self._cells[r][i] == n:
+                return False
+        
+        # Column rule.
+        for i in range(9):
+            if self._cells[i][c] == n:
                 return False
         
         # Box rule.
