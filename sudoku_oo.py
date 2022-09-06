@@ -46,20 +46,6 @@ example3 = """
 ----8--79
 """
 
-# Example Dad is stuck with :)
-example4 = """
----------
--3---6-9-
--9-3-8461
---92--7--
--4--1--5-
---16--9--
--1-5-7839
--6---9-4-
----------
-"""
-
-
 class Sudoku:
     """
     Sudoku puzzle.
@@ -148,8 +134,8 @@ class Sudoku:
 
 def main():
     # Read from string.
-    # puzzle = example4
-    # s = Sudoku(example4)
+    # puzzle = example3
+    # s = Sudoku(example3)
 
     # Read from file.
     s = Sudoku.from_file('puzzles/puzzle4.txt')

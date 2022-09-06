@@ -10,7 +10,6 @@ python sudoku.py
 
 # todo
 
-* Load input from file.
 * Logging (to conveniently show/hide debug info.)
 * Visualisation: web? (React? Elm? Vanilla JS?)
 * Profile.
