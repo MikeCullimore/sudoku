@@ -46,6 +46,19 @@ example3 = """
 ----8--79
 """
 
+# Example Dad is stuck with :)
+example4 = """
+---------
+-3---6-9-
+-9-3-8461
+--92--7--
+-4--1--5-
+--16--9--
+-1-5-7839
+-6---9-4-
+---------
+"""
+
 
 class Sudoku:
     """
@@ -106,6 +119,12 @@ class Sudoku:
                     print(value, end=' ')
             print()
     
+    @classmethod
+    def from_file(cls, filename):
+        with open(filename, 'r') as f:
+            s = f.read()
+        return cls(s)
+    
     def __init__(self, s=example):
         """
         todo: input validation e.g. enforce 9 rows and columns.
@@ -116,7 +135,7 @@ class Sudoku:
         for row in rows:
             r = []
             for col, c in enumerate(row):
-                if c is '-':
+                if c == '-':
                     value = 0
                 else:
                     try:
@@ -128,9 +147,12 @@ class Sudoku:
 
 
 def main():
-    # s = Sudoku(example)
-    # s = Sudoku(example2)
-    s = Sudoku(example3)
+    # Read from string.
+    # puzzle = example4
+    # s = Sudoku(example4)
+
+    # Read from file.
+    s = Sudoku.from_file('puzzles/puzzle4.txt')
     
     # s.print()
     # print(s._cells)
